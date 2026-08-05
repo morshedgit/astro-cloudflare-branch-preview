@@ -1,11 +1,12 @@
 ---
-const branchName = "feature/analytics-dashboard";
+const branchName = "main";
 const buildTime = new Date().toISOString();
+
 const metrics = [
-  { label: "Preview Latency", value: "18ms", status: "Optimal", color: "#10b981" },
+  { label: "Production Latency", value: "14ms", status: "Optimal", color: "#10b981" },
   { label: "Edge Locations", value: "320+", status: "Active", color: "#38bdf8" },
-  { label: "Cache Hit Ratio", value: "99.8%", status: "Global", color: "#a855f7" },
-  { label: "Branch Commits", value: "24", status: "Synced", color: "#f97316" }
+  { label: "Cache Hit Ratio", value: "99.9%", status: "Global", color: "#a855f7" },
+  { label: "Features Merged", value: "2", status: "Production", color: "#f97316" }
 ];
 
 const edgeNodes = [
@@ -14,6 +15,13 @@ const edgeNodes = [
   { location: "AP-East (HKG)", status: "Online", ping: "22ms" },
   { location: "SA-East (GRU)", status: "Online", ping: "35ms" }
 ];
+
+const chatMessages = [
+  { sender: "User", text: "How does Cloudflare Pages handle per-branch preview URLs?", time: "14:48" },
+  { sender: "Antigravity AI", text: "Every non-main branch push generates a unique, isolated preview URL automatically!", time: "14:49" },
+  { sender: "User", text: "Are all PRs and feature branches merged into Production now?", time: "14:51" },
+  { sender: "Antigravity AI", text: "Yes! Both Analytics Dashboard & AI Chat Interface are now merged into main and deployed live to Production!", time: "14:52" }
+];
 ---
 
 <html lang="en">
@@ -21,7 +29,7 @@ const edgeNodes = [
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Astro Cloudflare Branch Preview | {branchName}</title>
+    <title>Astro Cloudflare Production | {branchName}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -30,19 +38,19 @@ const edgeNodes = [
     <div class="background-glow"></div>
     <main class="container">
       <header class="header">
-        <div class="badge preview-badge">
+        <div class="badge prod-badge">
           <span class="pulse-dot"></span>
-          <span>Commit #2 Pushed: <strong>{branchName}</strong></span>
+          <span>Environment: <strong>{branchName} (Production)</strong></span>
         </div>
-        <h1>📊 Analytics & Edge Nodes Dashboard</h1>
+        <h1>🚀 Combined Production Suite</h1>
         <p class="subtitle">
-          Testing Cloudflare Pages automatic preview URL updates on new branch commits for <code>feature/analytics-dashboard</code>.
+          All feature branches (<strong>Analytics Dashboard</strong> & <strong>AI Chat Interface</strong>) have been merged and deployed to Production!
         </p>
       </header>
 
-      <!-- METRICS GRID -->
+      <!-- FEATURE 1: Analytics & Metrics Grid -->
       <section class="metrics-section">
-        <h2 class="section-title">✨ Branch Metrics & Performance</h2>
+        <h2 class="section-title">📊 Analytics & Branch Metrics (Merged)</h2>
         <div class="metrics-grid">
           {metrics.map(m => (
             <div class="metric-card">
@@ -58,9 +66,9 @@ const edgeNodes = [
         </div>
       </section>
 
-      <!-- EDGE NODES SECTION (NEW COMMIT ADDITION) -->
+      <!-- FEATURE 1 PART B: Global Edge Nodes -->
       <section class="nodes-section">
-        <h2 class="section-title">🌐 Global Edge Nodes (Added in Commit #2)</h2>
+        <h2 class="section-title">🌐 Global Edge Nodes</h2>
         <div class="nodes-grid">
           {edgeNodes.map(node => (
             <div class="node-card">
@@ -74,37 +82,65 @@ const edgeNodes = [
         </div>
       </section>
 
+      <!-- FEATURE 2: AI Chat Widget -->
+      <section class="chat-section">
+        <h2 class="section-title">🤖 AI Copilot Assistant (Merged)</h2>
+        <div class="chat-card">
+          <div class="chat-header">
+            <div class="ai-status">
+              <span class="status-indicator"></span>
+              <span class="ai-title">Antigravity Copilot AI</span>
+              <span class="model-tag">Gemini 2.5 Flash</span>
+            </div>
+            <span class="chat-badge">Production Feature</span>
+          </div>
+
+          <div class="chat-body">
+            {chatMessages.map(msg => (
+              <div class={`message-wrapper ${msg.sender === 'User' ? 'user-msg' : 'ai-msg'}`}>
+                <div class="message-bubble">
+                  <div class="msg-sender">{msg.sender}</div>
+                  <div class="msg-text">{msg.text}</div>
+                  <div class="msg-time">{msg.time}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="chat-footer">
+            <input type="text" placeholder="Type a prompt for AI agent..." class="chat-input" readonly />
+            <button class="send-btn">Send ✨</button>
+          </div>
+        </div>
+      </section>
+
       <div class="grid">
         <!-- Card 1: Branch Status -->
-        <div class="card highlight-preview">
-          <div class="card-icon">⚡</div>
-          <h2>Branch Preview Status</h2>
+        <div class="card highlight-prod">
+          <div class="card-icon">🚀</div>
+          <h2>Production Status</h2>
           <div class="info-row">
             <span class="label">Environment:</span>
-            <span class="value badge-preview">Branch Preview</span>
+            <span class="value badge-prod">Live Production</span>
           </div>
           <div class="info-row">
             <span class="label">Git Branch:</span>
             <code class="code">{branchName}</code>
           </div>
           <div class="info-row">
-            <span class="label">Latest Commit:</span>
-            <span class="value">Commit #2 Pushed</span>
-          </div>
-          <div class="info-row">
-            <span class="label">Built At:</span>
+            <span class="label">Last Built:</span>
             <span class="value">{buildTime}</span>
           </div>
         </div>
 
-        <!-- Card 2: Workflow Instructions -->
+        <!-- Card 2: Workflow Summary -->
         <div class="card">
-          <div class="card-icon">🧪</div>
-          <h2>Per-Commit Preview URL Test</h2>
+          <div class="card-icon">✅</div>
+          <h2>Workflow Completed</h2>
           <ol class="steps">
-            <li>Commit #2 pushed to <code>{branchName}</code>.</li>
-            <li>Cloudflare automatically triggers a fresh build for this commit.</li>
-            <li>Preview URL updates instantly with the new Global Edge Nodes section!</li>
+            <li>Created <code>feature/analytics-dashboard</code> and verified branch preview.</li>
+            <li>Created <code>feature/ai-chat-interface</code> and verified branch preview.</li>
+            <li>Both feature PRs merged cleanly into <code>main</code>!</li>
           </ol>
         </div>
 
@@ -126,8 +162,8 @@ const edgeNodes = [
               <span class="config-val"><code>dist</code></span>
             </div>
             <div class="config-item">
-              <span class="config-name">Preview Deployment:</span>
-              <span class="config-val">Automatic</span>
+              <span class="config-name">Deployment:</span>
+              <span class="config-val">Production</span>
             </div>
           </div>
         </div>
@@ -140,14 +176,14 @@ const edgeNodes = [
 
     <style>
       :root {
-        --bg: #0b0f19;
+        --bg: #090d16;
         --card-bg: rgba(22, 30, 46, 0.75);
         --card-border: rgba(255, 255, 255, 0.08);
         --text: #e2e8f0;
         --text-dim: #94a3b8;
-        --accent: #10b981;
-        --accent-glow: rgba(16, 185, 129, 0.25);
-        --preview-color: #38bdf8;
+        --accent: #3b82f6;
+        --accent-glow: rgba(59, 130, 246, 0.25);
+        --prod-color: #10b981;
         --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
         --font-mono: 'JetBrains Mono', monospace;
       }
@@ -174,7 +210,7 @@ const edgeNodes = [
         position: absolute;
         width: 700px;
         height: 700px;
-        background: radial-gradient(circle, var(--accent-glow) 0%, rgba(11, 15, 25, 0) 70%);
+        background: radial-gradient(circle, var(--accent-glow) 0%, rgba(9, 13, 22, 0) 70%);
         top: -200px;
         left: 50%;
         transform: translateX(-50%);
@@ -201,7 +237,7 @@ const edgeNodes = [
         gap: 0.5rem;
         background: rgba(16, 185, 129, 0.12);
         border: 1px solid rgba(16, 185, 129, 0.3);
-        color: var(--accent);
+        color: var(--prod-color);
         padding: 0.4rem 1rem;
         border-radius: 9999px;
         font-size: 0.875rem;
@@ -211,9 +247,9 @@ const edgeNodes = [
       .pulse-dot {
         width: 8px;
         height: 8px;
-        background-color: var(--accent);
+        background-color: var(--prod-color);
         border-radius: 50%;
-        box-shadow: 0 0 8px var(--accent);
+        box-shadow: 0 0 8px var(--prod-color);
         animation: pulse 2s infinite;
       }
 
@@ -227,7 +263,7 @@ const edgeNodes = [
         font-weight: 800;
         line-height: 1.15;
         letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ffffff 30%, #34d399 100%);
+        background: linear-gradient(135deg, #ffffff 30%, #60a5fa 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 1rem;
@@ -236,7 +272,7 @@ const edgeNodes = [
       .subtitle {
         color: var(--text-dim);
         font-size: 1.125rem;
-        max-width: 620px;
+        max-width: 650px;
         margin: 0 auto;
         line-height: 1.6;
       }
@@ -244,14 +280,14 @@ const edgeNodes = [
       .section-title {
         font-size: 1.1rem;
         font-weight: 700;
-        color: var(--accent);
+        color: #38bdf8;
         margin-bottom: 1rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
       }
 
-      .metrics-section, .nodes-section {
-        margin-bottom: 2.5rem;
+      .metrics-section, .nodes-section, .chat-section {
+        margin-bottom: 3rem;
       }
 
       .metrics-grid {
@@ -294,7 +330,6 @@ const edgeNodes = [
         color: #ffffff;
       }
 
-      /* NODES GRID */
       .nodes-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -339,6 +374,156 @@ const edgeNodes = [
         border-radius: 4px;
       }
 
+      /* AI CHAT WIDGET */
+      .chat-card {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 16px 40px rgba(59, 130, 246, 0.1);
+        backdrop-filter: blur(16px);
+      }
+
+      .chat-header {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .ai-status {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .status-indicator {
+        width: 10px;
+        height: 10px;
+        background-color: #10b981;
+        border-radius: 50%;
+        box-shadow: 0 0 8px #10b981;
+      }
+
+      .ai-title {
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      .model-tag {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
+        padding: 0.15rem 0.5rem;
+        border-radius: 6px;
+      }
+
+      .chat-badge {
+        font-size: 0.75rem;
+        color: var(--prod-color);
+        background: rgba(16, 185, 129, 0.15);
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        font-weight: 600;
+      }
+
+      .chat-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-height: 340px;
+        overflow-y: auto;
+      }
+
+      .message-wrapper {
+        display: flex;
+        width: 100%;
+      }
+
+      .user-msg {
+        justify-content: flex-end;
+      }
+
+      .ai-msg {
+        justify-content: flex-start;
+      }
+
+      .message-bubble {
+        max-width: 80%;
+        padding: 0.85rem 1.15rem;
+        border-radius: 14px;
+        font-size: 0.925rem;
+        line-height: 1.5;
+        position: relative;
+      }
+
+      .user-msg .message-bubble {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: #ffffff;
+        border-bottom-right-radius: 4px;
+      }
+
+      .ai-msg .message-bubble {
+        background: rgba(30, 41, 59, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #f1f5f9;
+        border-bottom-left-radius: 4px;
+      }
+
+      .msg-sender {
+        font-size: 0.75rem;
+        font-weight: 700;
+        opacity: 0.8;
+        margin-bottom: 0.25rem;
+      }
+
+      .msg-time {
+        font-size: 0.675rem;
+        opacity: 0.6;
+        text-align: right;
+        margin-top: 0.35rem;
+      }
+
+      .chat-footer {
+        padding: 1rem 1.5rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .chat-input {
+        flex: 1;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        color: var(--text);
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+        outline: none;
+      }
+
+      .send-btn {
+        background: linear-gradient(135deg, #3b82f6, #10b981);
+        border: none;
+        color: #ffffff;
+        padding: 0.75rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+      }
+
+      .send-btn:hover {
+        opacity: 0.9;
+      }
+
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -360,7 +545,7 @@ const edgeNodes = [
         border-color: rgba(255, 255, 255, 0.2);
       }
 
-      .card.highlight-preview {
+      .card.highlight-prod {
         border-color: rgba(16, 185, 129, 0.4);
         box-shadow: 0 8px 32px rgba(16, 185, 129, 0.12);
       }
@@ -393,9 +578,9 @@ const edgeNodes = [
         color: var(--text-dim);
       }
 
-      .badge-preview {
-        background: rgba(56, 189, 248, 0.15);
-        color: var(--preview-color);
+      .badge-prod {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--prod-color);
         padding: 0.2rem 0.6rem;
         border-radius: 6px;
         font-weight: 600;
