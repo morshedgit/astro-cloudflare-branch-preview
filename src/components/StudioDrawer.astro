@@ -1,0 +1,293 @@
+---
+---
+
+<!-- STUDIO FLOATING OVERLAY & DRAWER -->
+<div id="studioRoot" class="studio-root hidden">
+  <!-- FLOATING STUDIO TOGGLE BADGE (Visible when ?studio=true) -->
+  <button id="studioToggleBtn" class="studio-toggle-btn">
+    <span class="studio-icon">🎨</span>
+    <span class="studio-label">Studio Active</span>
+  </button>
+
+  <!-- SLIDE-OUT STUDIO DRAWER PANEL -->
+  <aside id="studioDrawer" class="studio-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <span class="title-icon">🎨</span>
+        <span>Astro Design Studio</span>
+      </div>
+      <button id="closeStudioBtn" class="close-btn">&times;</button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- SECTION 1: CONTENT EDITING -->
+      <div class="studio-section">
+        <h4 class="section-heading">1. Live Page Content</h4>
+        
+        <div class="studio-field">
+          <label for="studioTitleInput">Headline Text</label>
+          <input type="text" id="studioTitleInput" placeholder="Enter headline..." />
+        </div>
+
+        <div class="studio-field">
+          <label for="studioSubtitleInput">Subtitle Text</label>
+          <textarea id="studioSubtitleInput" rows="2" placeholder="Enter subtitle..."></textarea>
+        </div>
+
+        <div class="studio-field">
+          <label for="studioBadgeInput">Badge Label</label>
+          <input type="text" id="studioBadgeInput" placeholder="Enter badge..." />
+        </div>
+      </div>
+
+      <!-- SECTION 2: DESIGN SYSTEM TOKENS -->
+      <div class="studio-section">
+        <h4 class="section-heading">2. Design System Tokens</h4>
+        
+        <div class="studio-field">
+          <label>Theme Accent Color</label>
+          <div class="color-palette">
+            <button class="color-swatch active" data-color="#10b981" style="background:#10b981" title="Emerald"></button>
+            <button class="color-swatch" data-color="#ec4899" style="background:#ec4899" title="Pink"></button>
+            <button class="color-swatch" data-color="#a855f7" style="background:#a855f7" title="Violet"></button>
+            <button class="color-swatch" data-color="#3b82f6" style="background:#3b82f6" title="Blue"></button>
+            <button class="color-swatch" data-color="#f97316" style="background:#f97316" title="Orange"></button>
+          </div>
+        </div>
+
+        <div class="studio-field">
+          <label for="studioGlowRange">Glow Intensity</label>
+          <input type="range" id="studioGlowRange" min="10" max="80" value="40" />
+        </div>
+      </div>
+
+      <!-- SECTION 3: GIT BRANCH & COMMIT -->
+      <div class="studio-section">
+        <h4 class="section-heading">3. Create Git Branch & Push</h4>
+        
+        <div class="studio-field">
+          <label for="studioBranchInput">New Branch Name</label>
+          <div class="prefix-input">
+            <span>studio/</span>
+            <input type="text" id="studioBranchInput" value="content-update" />
+          </div>
+        </div>
+
+        <div class="studio-field">
+          <label for="studioCommitMsgInput">Commit Message</label>
+          <input type="text" id="studioCommitMsgInput" value="feat(studio): update page content and design tokens" />
+        </div>
+
+        <button id="studioSaveBranchBtn" class="save-branch-btn">
+          <span>🚀 Commit & Push Branch</span>
+        </button>
+      </div>
+
+      <!-- TERMINAL PREVIEW -->
+      <div class="terminal-preview">
+        <div class="term-title">Git Command Preview</div>
+        <pre id="studioTermCode" class="term-code">
+git checkout -b studio/content-update
+git add .
+git commit -m "feat(studio): update page content and design tokens"
+git push -u origin studio/content-update
+        </pre>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<style>
+  .studio-root.hidden { display: none !important; }
+
+  /* FLOATING TOGGLE BUTTON */
+  .studio-toggle-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    color: #ffffff;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(168, 85, 247, 0.4);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: transform 0.2s ease;
+  }
+  .studio-toggle-btn:hover { transform: scale(1.05); }
+
+  /* SLIDE-OUT DRAWER PANEL */
+  .studio-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 380px;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10000;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .studio-drawer.open { transform: translateX(0); }
+
+  .drawer-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .drawer-title { font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; }
+  .close-btn { background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; }
+
+  .drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .studio-section { display: flex; flex-direction: column; gap: 1rem; }
+  .section-heading { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #a855f7; font-weight: 700; }
+
+  .studio-field { display: flex; flex-direction: column; gap: 0.35rem; }
+  .studio-field label { font-size: 0.8rem; font-weight: 600; color: #cbd5e1; }
+  .studio-field input, .studio-field textarea {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+    color: #ffffff;
+    font-size: 0.875rem;
+    outline: none;
+  }
+  .studio-field input:focus, .studio-field textarea:focus { border-color: #a855f7; }
+
+  .prefix-input { display: flex; align-items: center; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; }
+  .prefix-input span { padding-left: 0.75rem; color: #94a3b8; font-family: monospace; font-size: 0.85rem; }
+  .prefix-input input { border: none; background: transparent; }
+
+  .color-palette { display: flex; gap: 0.5rem; }
+  .color-swatch { width: 30px; height: 30px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.15s; }
+  .color-swatch.active { border-color: #ffffff; transform: scale(1.15); }
+
+  .save-branch-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
+    color: #ffffff;
+    padding: 0.75rem 1.25rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: opacity 0.2s;
+  }
+  .save-branch-btn:hover { opacity: 0.9; }
+
+  .terminal-preview {
+    background: #020617;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 1rem;
+  }
+  .term-title { font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.5rem; font-weight: 600; }
+  .term-code { font-family: monospace; font-size: 0.8rem; color: #34d399; line-height: 1.5; white-space: pre-wrap; }
+</style>
+
+<script>
+  // CLIENT SCRIPT: ACTIVATE STUDIO IF ?studio=true IN QUERY PARAMS
+  document.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const studioParam = urlParams.get('studio');
+    const studioRoot = document.getElementById('studioRoot');
+    const studioToggleBtn = document.getElementById('studioToggleBtn');
+    const studioDrawer = document.getElementById('studioDrawer');
+    const closeStudioBtn = document.getElementById('closeStudioBtn');
+
+    // Show Studio root if ?studio=true
+    if (studioParam === 'true') {
+      studioRoot?.classList.remove('hidden');
+    }
+
+    // Toggle drawer open/close
+    studioToggleBtn?.addEventListener('click', () => {
+      studioDrawer?.classList.toggle('open');
+    });
+
+    closeStudioBtn?.addEventListener('click', () => {
+      studioDrawer?.classList.remove('open');
+    });
+
+    // Realtime Content & Token Binds
+    const studioTitleInput = document.getElementById('studioTitleInput') as HTMLInputElement;
+    const studioSubtitleInput = document.getElementById('studioSubtitleInput') as HTMLTextAreaElement;
+    const studioBadgeInput = document.getElementById('studioBadgeInput') as HTMLInputElement;
+    const studioBranchInput = document.getElementById('studioBranchInput') as HTMLInputElement;
+    const studioCommitMsgInput = document.getElementById('studioCommitMsgInput') as HTMLInputElement;
+    const studioTermCode = document.getElementById('studioTermCode');
+    const studioSaveBranchBtn = document.getElementById('studioSaveBranchBtn');
+
+    // Find main page targets
+    const pageH1 = document.querySelector('h1');
+    const pageSubtitle = document.querySelector('.subtitle');
+    const pageBadgeText = document.querySelector('.badge span strong, .badge span');
+    const pageGlow = document.querySelector('.background-glow') as HTMLElement;
+
+    if (pageH1 && studioTitleInput) studioTitleInput.value = pageH1.innerText;
+    if (pageSubtitle && studioSubtitleInput) studioSubtitleInput.value = pageSubtitle.innerText;
+
+    function updateTerminal() {
+      const branch = 'studio/' + (studioBranchInput?.value || 'content-update');
+      const msg = studioCommitMsgInput?.value || 'feat(studio): update page content and design tokens';
+      if (studioTermCode) {
+        studioTermCode.textContent = `git checkout -b ${branch}\ngit add .\ngit commit -m "${msg}"\ngit push -u origin ${branch}`;
+      }
+    }
+
+    studioTitleInput?.addEventListener('input', (e) => {
+      if (pageH1) pageH1.innerText = (e.target as HTMLInputElement).value;
+    });
+
+    studioSubtitleInput?.addEventListener('input', (e) => {
+      if (pageSubtitle) pageSubtitle.innerText = (e.target as HTMLTextAreaElement).value;
+    });
+
+    studioBadgeInput?.addEventListener('input', (e) => {
+      if (pageBadgeText) pageBadgeText.innerText = (e.target as HTMLInputElement).value;
+    });
+
+    studioBranchInput?.addEventListener('input', updateTerminal);
+    studioCommitMsgInput?.addEventListener('input', updateTerminal);
+
+    document.querySelectorAll('.color-swatch').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.color-swatch').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const color = (btn as HTMLElement).dataset.color || '#10b981';
+        document.documentElement.style.setProperty('--accent', color);
+        if (pageGlow) {
+          pageGlow.style.background = `radial-gradient(circle, ${color}40 0%, rgba(9, 13, 22, 0) 70%)`;
+        }
+      });
+    });
+
+    studioSaveBranchBtn?.addEventListener('click', () => {
+      const branch = 'studio/' + (studioBranchInput?.value || 'content-update');
+      alert(`🚀 Studio Branch Save Action Triggered!\n\nTarget Branch: ${branch}\n\nRunning push action will create '${branch}' on GitHub and generate a live Cloudflare Pages preview URL!`);
+    });
+  });
+</script>

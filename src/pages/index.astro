@@ -1,11 +1,13 @@
 ---
+import StudioDrawer from '../components/StudioDrawer.astro';
+
 const branchName = "feature/studio-editor";
 const buildTime = new Date().toISOString();
 
 const metrics = [
   { label: "Production Latency", value: "14ms", status: "Optimal", color: "#10b981" },
   { label: "Edge Locations", value: "320+", status: "Active", color: "#38bdf8" },
-  { label: "Studio Status", value: "Ready", status: "New Feature", color: "#a855f7" },
+  { label: "Studio Mode", value: "?studio=true", status: "QueryParam", color: "#a855f7" },
   { label: "Branch Previews", value: "Enabled", status: "Automatic", color: "#f97316" }
 ];
 ---
@@ -26,17 +28,17 @@ const metrics = [
       <header class="header">
         <div class="badge studio-badge">
           <span class="pulse-dot"></span>
-          <span>New Feature: <strong>Astro Studio Editor</strong></span>
+          <span>Studio Feature: <strong>?studio=true</strong> Enabled</span>
         </div>
-        <h1>🎨 Studio Editor & Branch Creator</h1>
+        <h1>🎨 Universal Studio Editor</h1>
         <p class="subtitle">
-          Customize design tokens, page copy, and branding in Studio, then automatically generate a new branch & commit for Cloudflare Pages preview!
+          Append <code>?studio=true</code> to any page URL to open the live Studio drawer, edit design tokens & page copy, and push a new branch to Cloudflare Pages!
         </p>
 
-        <!-- CTA TO LAUNCH STUDIO -->
+        <!-- CTA TO TRIGGER STUDIO VIA QUERYPARAM -->
         <div class="header-actions">
-          <a href="/studio" class="cta-studio-btn">
-            <span>✨ Launch Studio Editor</span>
+          <a href="/?studio=true" class="cta-studio-btn">
+            <span>✨ Enable Studio Overlay (?studio=true)</span>
           </a>
         </div>
       </header>
@@ -60,32 +62,32 @@ const metrics = [
       </section>
 
       <div class="grid">
-        <!-- Card 1: Studio Feature Overview -->
+        <!-- Card 1: QueryParam Studio Feature -->
         <div class="card highlight-studio">
           <div class="card-icon">🛠️</div>
-          <h2>Interactive Studio Features</h2>
+          <h2>QueryParam Studio Features</h2>
+          <div class="info-row">
+            <span class="label">Universal URL Trigger:</span>
+            <code class="code">?studio=true</code>
+          </div>
           <div class="info-row">
             <span class="label">Live Token Editor:</span>
-            <span class="value">Colors, Glow, Typography</span>
+            <span class="value">DOM Content & CSS Tokens</span>
           </div>
           <div class="info-row">
-            <span class="label">Git Branch Generator:</span>
-            <span class="value">Automated <code>studio/*</code> branches</span>
-          </div>
-          <div class="info-row">
-            <span class="label">Cloudflare Integration:</span>
-            <span class="value">Per-branch preview URLs</span>
+            <span class="label">Branch Exporter:</span>
+            <span class="value">Pushes <code>studio/*</code> branches</span>
           </div>
         </div>
 
         <!-- Card 2: Workflow Summary -->
         <div class="card">
           <div class="card-icon">⚡</div>
-          <h2>How Studio Works</h2>
+          <h2>How to Use Studio</h2>
           <ol class="steps">
-            <li>Click <strong>Launch Studio Editor</strong> above to open <code>/studio</code>.</li>
-            <li>Customize design tokens and page copy in real-time.</li>
-            <li>Click <strong>Save & Push Branch</strong> to generate a custom branch commit for Cloudflare!</li>
+            <li>Visit <code>/?studio=true</code> on any page.</li>
+            <li>Click the floating <strong>Studio Active 🎨</strong> badge at the bottom right.</li>
+            <li>Edit content, tweak colors, and click <strong>Commit & Push Branch</strong>!</li>
           </ol>
         </div>
       </div>
@@ -94,6 +96,9 @@ const metrics = [
         <p>Built with ❤️ for testing GitHub & Cloudflare Pages Branch Previews</p>
       </footer>
     </main>
+
+    <!-- UNIVERSAL STUDIO DRAWER OVERLAY -->
+    <StudioDrawer />
 
     <style>
       :root {
@@ -199,7 +204,7 @@ const metrics = [
       }
 
       .cta-studio-btn {
-        background: linear-gradient(135deg, #a855f7, #6366f1);
+        background: linear-gradient(135deg, #a855f7, #ec4899);
         color: #ffffff;
         text-decoration: none;
         padding: 0.85rem 2rem;
