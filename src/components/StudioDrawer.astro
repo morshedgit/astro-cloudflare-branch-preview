@@ -50,11 +50,11 @@
         <div class="studio-field">
           <label>Theme Accent Color</label>
           <div class="color-palette">
-            <button class="color-swatch active" data-color="#10b981" style="background:#10b981" title="Emerald"></button>
-            <button class="color-swatch" data-color="#ec4899" style="background:#ec4899" title="Pink"></button>
-            <button class="color-swatch" data-color="#a855f7" style="background:#a855f7" title="Violet"></button>
-            <button class="color-swatch" data-color="#3b82f6" style="background:#3b82f6" title="Blue"></button>
-            <button class="color-swatch" data-color="#f97316" style="background:#f97316" title="Orange"></button>
+            <button class="color-swatch active" data-color="#10b981" style="background-color: #10b981;" title="Emerald"></button>
+            <button class="color-swatch" data-color="#ec4899" style="background-color: #ec4899;" title="Pink"></button>
+            <button class="color-swatch" data-color="#a855f7" style="background-color: #a855f7;" title="Violet"></button>
+            <button class="color-swatch" data-color="#3b82f6" style="background-color: #3b82f6;" title="Blue"></button>
+            <button class="color-swatch" data-color="#f97316" style="background-color: #f97316;" title="Orange"></button>
           </div>
         </div>
       </div>
@@ -218,120 +218,132 @@ POST /api/studio-save
   .term-code { font-family: monospace; font-size: 0.8rem; color: #34d399; line-height: 1.5; white-space: pre-wrap; }
 </style>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const studioParam = urlParams.get('studio');
-    const studioRoot = document.getElementById('studioRoot');
-    const studioToggleBtn = document.getElementById('studioToggleBtn');
-    const studioDrawer = document.getElementById('studioDrawer');
-    const closeStudioBtn = document.getElementById('closeStudioBtn');
-    const statusBanner = document.getElementById('studioStatusBanner');
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function() {
+    var urlParams = new URLSearchParams(window.location.search);
+    var studioParam = urlParams.get('studio');
+    var studioRoot = document.getElementById('studioRoot');
+    var studioToggleBtn = document.getElementById('studioToggleBtn');
+    var studioDrawer = document.getElementById('studioDrawer');
+    var closeStudioBtn = document.getElementById('closeStudioBtn');
+    var statusBanner = document.getElementById('studioStatusBanner');
 
-    if (studioParam === 'true') {
-      studioRoot?.classList.remove('hidden');
+    if (studioParam === 'true' && studioRoot) {
+      studioRoot.classList.remove('hidden');
     }
 
-    studioToggleBtn?.addEventListener('click', () => {
-      studioDrawer?.classList.toggle('open');
-    });
+    if (studioToggleBtn && studioDrawer) {
+      studioToggleBtn.addEventListener('click', function() {
+        studioDrawer.classList.toggle('open');
+      });
+    }
 
-    closeStudioBtn?.addEventListener('click', () => {
-      studioDrawer?.classList.remove('open');
-    });
+    if (closeStudioBtn && studioDrawer) {
+      closeStudioBtn.addEventListener('click', function() {
+        studioDrawer.classList.remove('open');
+      });
+    }
 
-    const studioTitleInput = document.getElementById('studioTitleInput') as HTMLInputElement;
-    const studioSubtitleInput = document.getElementById('studioSubtitleInput') as HTMLTextAreaElement;
-    const studioBadgeInput = document.getElementById('studioBadgeInput') as HTMLInputElement;
-    const studioBranchInput = document.getElementById('studioBranchInput') as HTMLInputElement;
-    const studioCommitMsgInput = document.getElementById('studioCommitMsgInput') as HTMLInputElement;
-    const studioTermCode = document.getElementById('studioTermCode');
-    const studioSaveBranchBtn = document.getElementById('studioSaveBranchBtn') as HTMLButtonElement;
+    var studioTitleInput = document.getElementById('studioTitleInput');
+    var studioSubtitleInput = document.getElementById('studioSubtitleInput');
+    var studioBadgeInput = document.getElementById('studioBadgeInput');
+    var studioBranchInput = document.getElementById('studioBranchInput');
+    var studioCommitMsgInput = document.getElementById('studioCommitMsgInput');
+    var studioTermCode = document.getElementById('studioTermCode');
+    var studioSaveBranchBtn = document.getElementById('studioSaveBranchBtn');
 
-    const pageH1 = document.querySelector('h1');
-    const pageSubtitle = document.querySelector('.subtitle');
-    const pageBadgeText = document.querySelector('.badge span strong, .badge span');
-    const pageGlow = document.querySelector('.background-glow') as HTMLElement;
+    var pageH1 = document.querySelector('h1');
+    var pageSubtitle = document.querySelector('.subtitle');
+    var pageBadgeText = document.querySelector('.badge span strong, .badge span');
+    var pageGlow = document.querySelector('.background-glow');
 
     if (pageH1 && studioTitleInput) studioTitleInput.value = pageH1.innerText;
     if (pageSubtitle && studioSubtitleInput) studioSubtitleInput.value = pageSubtitle.innerText;
 
     function updateTerminal() {
-      const branch = 'studio/' + (studioBranchInput?.value || 'content-update');
-      const msg = studioCommitMsgInput?.value || 'feat(studio): update page content and design tokens';
+      var branch = 'studio/' + ((studioBranchInput && studioBranchInput.value) || 'content-update');
+      var msg = (studioCommitMsgInput && studioCommitMsgInput.value) || 'feat(studio): update page content and design tokens';
       if (studioTermCode) {
-        studioTermCode.textContent = `POST /api/studio-save\n{\n  "branch": "${branch}",\n  "commitMsg": "${msg}"\n}`;
+        studioTermCode.textContent = 'POST /api/studio-save\n{\n  "branch": "' + branch + '",\n  "commitMsg": "' + msg + '"\n}';
       }
     }
 
-    studioTitleInput?.addEventListener('input', (e) => {
-      if (pageH1) pageH1.innerText = (e.target as HTMLInputElement).value;
-    });
+    if (studioTitleInput) {
+      studioTitleInput.addEventListener('input', function(e) {
+        if (pageH1) pageH1.innerText = e.target.value;
+      });
+    }
 
-    studioSubtitleInput?.addEventListener('input', (e) => {
-      if (pageSubtitle) pageSubtitle.innerText = (e.target as HTMLTextAreaElement).value;
-    });
+    if (studioSubtitleInput) {
+      studioSubtitleInput.addEventListener('input', function(e) {
+        if (pageSubtitle) pageSubtitle.innerText = e.target.value;
+      });
+    }
 
-    studioBadgeInput?.addEventListener('input', (e) => {
-      if (pageBadgeText) pageBadgeText.innerText = (e.target as HTMLInputElement).value;
-    });
+    if (studioBadgeInput) {
+      studioBadgeInput.addEventListener('input', function(e) {
+        if (pageBadgeText) pageBadgeText.innerText = e.target.value;
+      });
+    }
 
-    studioBranchInput?.addEventListener('input', updateTerminal);
-    studioCommitMsgInput?.addEventListener('input', updateTerminal);
+    if (studioBranchInput) studioBranchInput.addEventListener('input', updateTerminal);
+    if (studioCommitMsgInput) studioCommitMsgInput.addEventListener('input', updateTerminal);
 
-    document.querySelectorAll('.color-swatch').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.color-swatch').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const color = (btn as HTMLElement).dataset.color || '#10b981';
+    var swatches = document.querySelectorAll('.color-swatch');
+    for (var i = 0; i < swatches.length; i++) {
+      swatches[i].addEventListener('click', function(e) {
+        for (var j = 0; j < swatches.length; j++) swatches[j].classList.remove('active');
+        e.currentTarget.classList.add('active');
+        var color = e.currentTarget.getAttribute('data-color') || '#10b981';
         document.documentElement.style.setProperty('--accent', color);
         if (pageGlow) {
-          pageGlow.style.background = `radial-gradient(circle, ${color}40 0%, rgba(9, 13, 22, 0) 70%)`;
+          pageGlow.style.background = 'radial-gradient(circle, ' + color + '40 0%, rgba(9, 13, 22, 0) 70%)';
         }
       });
-    });
+    }
 
-    // CALL SECURE SERVER API ENDPOINT
-    studioSaveBranchBtn?.addEventListener('click', async () => {
-      const branch = 'studio/' + (studioBranchInput?.value || 'content-update');
-      const commitMsg = studioCommitMsgInput?.value || 'feat(studio): update page content and design tokens';
-      const content = document.documentElement.outerHTML;
+    if (studioSaveBranchBtn) {
+      studioSaveBranchBtn.addEventListener('click', async function() {
+        var branch = 'studio/' + ((studioBranchInput && studioBranchInput.value) || 'content-update');
+        var commitMsg = (studioCommitMsgInput && studioCommitMsgInput.value) || 'feat(studio): update page content and design tokens';
+        var content = document.documentElement.outerHTML;
 
-      if (statusBanner) {
-        statusBanner.className = 'status-banner info';
-        statusBanner.innerText = '⏳ Submitting to secure /api/studio-save server endpoint...';
-      }
+        if (statusBanner) {
+          statusBanner.className = 'status-banner info';
+          statusBanner.innerText = '⏳ Submitting to secure /api/studio-save server endpoint...';
+        }
 
-      studioSaveBranchBtn.disabled = true;
+        studioSaveBranchBtn.disabled = true;
 
-      try {
-        const response = await fetch('/api/studio-save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ branch, commitMsg, content })
-        });
+        try {
+          var response = await fetch('/api/studio-save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ branch: branch, commitMsg: commitMsg, content: content })
+          });
 
-        const data = await response.json();
+          var data = await response.json();
 
-        if (data.success) {
-          if (statusBanner) {
-            statusBanner.className = 'status-banner success';
-            statusBanner.innerHTML = `✅ ${data.message}<br/><br/><strong>Cloudflare Preview:</strong><br/><a href="${data.previewUrl}" target="_blank" style="color:#10b981;word-break:break-all">${data.previewUrl}</a>`;
+          if (data.success) {
+            if (statusBanner) {
+              statusBanner.className = 'status-banner success';
+              statusBanner.innerHTML = '✅ ' + data.message + '<br/><br/><strong>Cloudflare Preview:</strong><br/><a href="' + data.previewUrl + '" target="_blank" style="color:#10b981;word-break:break-all">' + data.previewUrl + '</a>';
+            }
+          } else {
+            if (statusBanner) {
+              statusBanner.className = 'status-banner error';
+              statusBanner.innerText = '⚠️ ' + data.error;
+            }
           }
-        } else {
+        } catch (err) {
           if (statusBanner) {
             statusBanner.className = 'status-banner error';
-            statusBanner.innerText = `⚠️ ${data.error}`;
+            statusBanner.innerText = '❌ API Request Failed: ' + err.message;
           }
+        } finally {
+          studioSaveBranchBtn.disabled = false;
         }
-      } catch (err: any) {
-        if (statusBanner) {
-          statusBanner.className = 'status-banner error';
-          statusBanner.innerText = `❌ API Request Failed: ${err.message}`;
-        }
-      } finally {
-        studioSaveBranchBtn.disabled = false;
-      }
-    });
+      });
+    }
   });
 </script>
