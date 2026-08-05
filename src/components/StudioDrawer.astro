@@ -20,6 +20,9 @@
     </div>
 
     <div class="drawer-body">
+      <!-- API STATUS FEEDBACK BANNER -->
+      <div id="studioStatusBanner" class="status-banner hidden"></div>
+
       <!-- SECTION 1: CONTENT EDITING -->
       <div class="studio-section">
         <h4 class="section-heading">1. Live Page Content</h4>
@@ -54,16 +57,11 @@
             <button class="color-swatch" data-color="#f97316" style="background:#f97316" title="Orange"></button>
           </div>
         </div>
-
-        <div class="studio-field">
-          <label for="studioGlowRange">Glow Intensity</label>
-          <input type="range" id="studioGlowRange" min="10" max="80" value="40" />
-        </div>
       </div>
 
       <!-- SECTION 3: GIT BRANCH & COMMIT -->
       <div class="studio-section">
-        <h4 class="section-heading">3. Create Git Branch & Push</h4>
+        <h4 class="section-heading">3. Secure Server API Commit</h4>
         
         <div class="studio-field">
           <label for="studioBranchInput">New Branch Name</label>
@@ -79,18 +77,19 @@
         </div>
 
         <button id="studioSaveBranchBtn" class="save-branch-btn">
-          <span>🚀 Commit & Push Branch</span>
+          <span>🚀 Commit & Push via Secure API</span>
         </button>
       </div>
 
       <!-- TERMINAL PREVIEW -->
       <div class="terminal-preview">
-        <div class="term-title">Git Command Preview</div>
+        <div class="term-title">Server Endpoint POST Payload (/api/studio-save)</div>
         <pre id="studioTermCode" class="term-code">
-git checkout -b studio/content-update
-git add .
-git commit -m "feat(studio): update page content and design tokens"
-git push -u origin studio/content-update
+POST /api/studio-save
+{
+  "branch": "studio/content-update",
+  "commitMsg": "feat(studio): update page content and design tokens"
+}
         </pre>
       </div>
     </div>
@@ -157,8 +156,19 @@ git push -u origin studio/content-update
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1.75rem;
+    gap: 1.5rem;
   }
+
+  .status-banner {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  .status-banner.hidden { display: none; }
+  .status-banner.info { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+  .status-banner.success { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+  .status-banner.error { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
 
   .studio-section { display: flex; flex-direction: column; gap: 1rem; }
   .section-heading { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: #a855f7; font-weight: 700; }
@@ -209,7 +219,6 @@ git push -u origin studio/content-update
 </style>
 
 <script>
-  // CLIENT SCRIPT: ACTIVATE STUDIO IF ?studio=true IN QUERY PARAMS
   document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const studioParam = urlParams.get('studio');
@@ -217,13 +226,12 @@ git push -u origin studio/content-update
     const studioToggleBtn = document.getElementById('studioToggleBtn');
     const studioDrawer = document.getElementById('studioDrawer');
     const closeStudioBtn = document.getElementById('closeStudioBtn');
+    const statusBanner = document.getElementById('studioStatusBanner');
 
-    // Show Studio root if ?studio=true
     if (studioParam === 'true') {
       studioRoot?.classList.remove('hidden');
     }
 
-    // Toggle drawer open/close
     studioToggleBtn?.addEventListener('click', () => {
       studioDrawer?.classList.toggle('open');
     });
@@ -232,16 +240,14 @@ git push -u origin studio/content-update
       studioDrawer?.classList.remove('open');
     });
 
-    // Realtime Content & Token Binds
     const studioTitleInput = document.getElementById('studioTitleInput') as HTMLInputElement;
     const studioSubtitleInput = document.getElementById('studioSubtitleInput') as HTMLTextAreaElement;
     const studioBadgeInput = document.getElementById('studioBadgeInput') as HTMLInputElement;
     const studioBranchInput = document.getElementById('studioBranchInput') as HTMLInputElement;
     const studioCommitMsgInput = document.getElementById('studioCommitMsgInput') as HTMLInputElement;
     const studioTermCode = document.getElementById('studioTermCode');
-    const studioSaveBranchBtn = document.getElementById('studioSaveBranchBtn');
+    const studioSaveBranchBtn = document.getElementById('studioSaveBranchBtn') as HTMLButtonElement;
 
-    // Find main page targets
     const pageH1 = document.querySelector('h1');
     const pageSubtitle = document.querySelector('.subtitle');
     const pageBadgeText = document.querySelector('.badge span strong, .badge span');
@@ -254,7 +260,7 @@ git push -u origin studio/content-update
       const branch = 'studio/' + (studioBranchInput?.value || 'content-update');
       const msg = studioCommitMsgInput?.value || 'feat(studio): update page content and design tokens';
       if (studioTermCode) {
-        studioTermCode.textContent = `git checkout -b ${branch}\ngit add .\ngit commit -m "${msg}"\ngit push -u origin ${branch}`;
+        studioTermCode.textContent = `POST /api/studio-save\n{\n  "branch": "${branch}",\n  "commitMsg": "${msg}"\n}`;
       }
     }
 
@@ -285,9 +291,47 @@ git push -u origin studio/content-update
       });
     });
 
-    studioSaveBranchBtn?.addEventListener('click', () => {
+    // CALL SECURE SERVER API ENDPOINT
+    studioSaveBranchBtn?.addEventListener('click', async () => {
       const branch = 'studio/' + (studioBranchInput?.value || 'content-update');
-      alert(`🚀 Studio Branch Save Action Triggered!\n\nTarget Branch: ${branch}\n\nRunning push action will create '${branch}' on GitHub and generate a live Cloudflare Pages preview URL!`);
+      const commitMsg = studioCommitMsgInput?.value || 'feat(studio): update page content and design tokens';
+      const content = document.documentElement.outerHTML;
+
+      if (statusBanner) {
+        statusBanner.className = 'status-banner info';
+        statusBanner.innerText = '⏳ Submitting to secure /api/studio-save server endpoint...';
+      }
+
+      studioSaveBranchBtn.disabled = true;
+
+      try {
+        const response = await fetch('/api/studio-save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ branch, commitMsg, content })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          if (statusBanner) {
+            statusBanner.className = 'status-banner success';
+            statusBanner.innerHTML = `✅ ${data.message}<br/><br/><strong>Cloudflare Preview:</strong><br/><a href="${data.previewUrl}" target="_blank" style="color:#10b981;word-break:break-all">${data.previewUrl}</a>`;
+          }
+        } else {
+          if (statusBanner) {
+            statusBanner.className = 'status-banner error';
+            statusBanner.innerText = `⚠️ ${data.error}`;
+          }
+        }
+      } catch (err: any) {
+        if (statusBanner) {
+          statusBanner.className = 'status-banner error';
+          statusBanner.innerText = `❌ API Request Failed: ${err.message}`;
+        }
+      } finally {
+        studioSaveBranchBtn.disabled = false;
+      }
     });
   });
 </script>
