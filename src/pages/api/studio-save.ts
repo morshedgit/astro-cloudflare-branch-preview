@@ -2,23 +2,32 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async (context) => {
   try {
+    const { request, locals } = context;
     const body = await request.json();
     const { branch, commitMsg, content } = body;
 
     const repoOwner = "morshedgit";
     const repoName = "astro-cloudflare-branch-preview";
     
-    // Check Cloudflare runtime env bindings, process.env, and import.meta.env
-    const cfEnv = (locals as any)?.runtime?.env;
-    const githubToken = cfEnv?.GITHUB_TOKEN || process?.env?.GITHUB_TOKEN || import.meta.env.GITHUB_TOKEN;
+    // Check Cloudflare Workers runtime env context
+    const cfRuntimeEnv = (locals as any)?.runtime?.env;
+    const directEnv = (context as any)?.env;
+    const githubToken = cfRuntimeEnv?.GITHUB_TOKEN || directEnv?.GITHUB_TOKEN || process?.env?.GITHUB_TOKEN || import.meta.env.GITHUB_TOKEN;
 
     if (!githubToken) {
+      // Diagnostic keys list to help identify available environment keys
+      const availableKeys = cfRuntimeEnv ? Object.keys(cfRuntimeEnv) : (directEnv ? Object.keys(directEnv) : []);
       return new Response(
         JSON.stringify({
           success: false,
-          error: "GITHUB_TOKEN is missing in Cloudflare runtime context. Ensure GITHUB_TOKEN is added under Workers & Pages -> Settings -> Environment Variables."
+          error: `GITHUB_TOKEN is missing in Cloudflare environment. Available keys: [${availableKeys.join(', ')}]. Please check Cloudflare Pages -> Settings -> Environment Variables and ensure GITHUB_TOKEN is added under Production/Preview.`,
+          debug: {
+            hasCfRuntime: !!cfRuntimeEnv,
+            hasDirectEnv: !!directEnv,
+            keys: availableKeys
+          }
         }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
