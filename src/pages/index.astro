@@ -1,6 +1,13 @@
 ---
-const branchName = "main";
+const branchName = "feature/ai-chat-interface";
 const buildTime = new Date().toISOString();
+
+const chatMessages = [
+  { sender: "User", text: "How does Cloudflare Pages handle per-branch preview URLs?", time: "14:48" },
+  { sender: "Antigravity AI", text: "Every non-main branch push generates a unique, isolated preview URL like https://<branch>.<project>.pages.dev automatically!", time: "14:49" },
+  { sender: "User", text: "Can I test multiple feature branches in parallel?", time: "14:49" },
+  { sender: "Antigravity AI", text: "Absolutely! Each branch gets its own distinct deployment pipeline and preview URL.", time: "14:50" }
+];
 ---
 
 <html lang="en">
@@ -17,24 +24,55 @@ const buildTime = new Date().toISOString();
     <div class="background-glow"></div>
     <main class="container">
       <header class="header">
-        <div class="badge">
+        <div class="badge preview-badge">
           <span class="pulse-dot"></span>
-          <span>Branch: <strong>{branchName}</strong></span>
+          <span>New Feature Branch: <strong>{branchName}</strong></span>
         </div>
-        <h1>Cloudflare Pages Branch Preview Test</h1>
+        <h1>🤖 AI Assistant Chat Feature</h1>
         <p class="subtitle">
-          Testing per-branch preview deployments powered by <strong>Astro</strong> & <strong>Cloudflare Pages</strong>.
+          Testing Cloudflare Pages automatic branch preview generation for <code>feature/ai-chat-interface</code>.
         </p>
       </header>
 
+      <!-- FEATURE HIGHLIGHT: AI Chat Widget -->
+      <section class="chat-section">
+        <div class="chat-card">
+          <div class="chat-header">
+            <div class="ai-status">
+              <span class="status-indicator"></span>
+              <span class="ai-title">Antigravity Copilot AI</span>
+              <span class="model-tag">Gemini 2.5 Flash</span>
+            </div>
+            <span class="chat-badge">Live Preview Feature</span>
+          </div>
+
+          <div class="chat-body">
+            {chatMessages.map(msg => (
+              <div class={`message-wrapper ${msg.sender === 'User' ? 'user-msg' : 'ai-msg'}`}>
+                <div class="message-bubble">
+                  <div class="msg-sender">{msg.sender}</div>
+                  <div class="msg-text">{msg.text}</div>
+                  <div class="msg-time">{msg.time}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="chat-footer">
+            <input type="text" placeholder="Type a prompt for AI agent..." class="chat-input" readonly />
+            <button class="send-btn">Send ✨</button>
+          </div>
+        </div>
+      </section>
+
       <div class="grid">
         <!-- Card 1: Branch Status -->
-        <div class="card highlight">
-          <div class="card-icon">🚀</div>
-          <h2>Current Deployment</h2>
+        <div class="card highlight-preview">
+          <div class="card-icon">⚡</div>
+          <h2>Branch Preview Status</h2>
           <div class="info-row">
             <span class="label">Environment:</span>
-            <span class="value badge-main">Production / Main</span>
+            <span class="value badge-preview">Preview (AI Chat Feature)</span>
           </div>
           <div class="info-row">
             <span class="label">Git Branch:</span>
@@ -49,12 +87,11 @@ const buildTime = new Date().toISOString();
         <!-- Card 2: Workflow Instructions -->
         <div class="card">
           <div class="card-icon">🧪</div>
-          <h2>How to Test Branch Previews</h2>
+          <h2>Branch Preview Verification</h2>
           <ol class="steps">
-            <li>Create a new git branch: <code>git checkout -b feature/test-preview</code></li>
-            <li>Make a UI or content edit in <code>src/pages/index.astro</code></li>
-            <li>Commit & push to GitHub: <code>git push origin feature/test-preview</code></li>
-            <li>Cloudflare Pages will build and generate a unique preview URL!</li>
+            <li>Cloudflare detects push to <code>{branchName}</code>.</li>
+            <li>Generates unique URL: <code>https://feature-ai-chat-interface.astro-cloudflare-branch-preview.pages.dev</code></li>
+            <li>Verify this new AI Chat UI independently from other feature branches!</li>
           </ol>
         </div>
 
@@ -76,29 +113,28 @@ const buildTime = new Date().toISOString();
               <span class="config-val"><code>dist</code></span>
             </div>
             <div class="config-item">
-              <span class="config-name">Node Version:</span>
-              <span class="config-val">20.x or later</span>
+              <span class="config-name">Preview Deployment:</span>
+              <span class="config-val">Automatic</span>
             </div>
           </div>
         </div>
       </div>
 
       <footer class="footer">
-        <p>Built with ❤️ for testing GitHub & Cloudflare Pages Git Integration</p>
+        <p>Built with ❤️ for testing GitHub & Cloudflare Pages Branch Previews</p>
       </footer>
     </main>
 
     <style>
       :root {
         --bg: #090d16;
-        --card-bg: rgba(22, 30, 46, 0.7);
+        --card-bg: rgba(22, 30, 46, 0.75);
         --card-border: rgba(255, 255, 255, 0.08);
         --text: #e2e8f0;
         --text-dim: #94a3b8;
-        --accent: #f97316;
-        --accent-glow: rgba(249, 115, 22, 0.25);
-        --main-color: #3b82f6;
-        --success: #10b981;
+        --accent: #ec4899;
+        --accent-glow: rgba(236, 72, 153, 0.25);
+        --preview-color: #8b5cf6;
         --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
         --font-mono: 'JetBrains Mono', monospace;
       }
@@ -123,17 +159,17 @@ const buildTime = new Date().toISOString();
 
       .background-glow {
         position: absolute;
-        width: 600px;
-        height: 600px;
+        width: 700px;
+        height: 700px;
         background: radial-gradient(circle, var(--accent-glow) 0%, rgba(9, 13, 22, 0) 70%);
-        top: -150px;
-        right: -150px;
+        top: -200px;
+        right: -100px;
         pointer-events: none;
         z-index: 0;
       }
 
       .container {
-        max-width: 960px;
+        max-width: 980px;
         width: 100%;
         padding: 3rem 1.5rem;
         position: relative;
@@ -142,15 +178,15 @@ const buildTime = new Date().toISOString();
 
       .header {
         text-align: center;
-        margin-bottom: 3.5rem;
+        margin-bottom: 3rem;
       }
 
       .badge {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        background: rgba(249, 115, 22, 0.12);
-        border: 1px solid rgba(249, 115, 22, 0.3);
+        background: rgba(236, 72, 153, 0.12);
+        border: 1px solid rgba(236, 72, 153, 0.3);
         color: var(--accent);
         padding: 0.4rem 1rem;
         border-radius: 9999px;
@@ -177,7 +213,7 @@ const buildTime = new Date().toISOString();
         font-weight: 800;
         line-height: 1.15;
         letter-spacing: -0.02em;
-        background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+        background: linear-gradient(135deg, #ffffff 30%, #f472b6 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 1rem;
@@ -186,9 +222,162 @@ const buildTime = new Date().toISOString();
       .subtitle {
         color: var(--text-dim);
         font-size: 1.125rem;
-        max-width: 600px;
+        max-width: 620px;
         margin: 0 auto;
         line-height: 1.6;
+      }
+
+      /* AI CHAT SECTION */
+      .chat-section {
+        margin-bottom: 3rem;
+      }
+
+      .chat-card {
+        background: rgba(15, 23, 42, 0.85);
+        border: 1px solid rgba(236, 72, 153, 0.3);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 16px 40px rgba(236, 72, 153, 0.1);
+        backdrop-filter: blur(16px);
+      }
+
+      .chat-header {
+        background: rgba(0, 0, 0, 0.4);
+        padding: 1.25rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .ai-status {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .status-indicator {
+        width: 10px;
+        height: 10px;
+        background-color: #10b981;
+        border-radius: 50%;
+        box-shadow: 0 0 8px #10b981;
+      }
+
+      .ai-title {
+        font-weight: 700;
+        font-size: 1rem;
+      }
+
+      .model-tag {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        background: rgba(236, 72, 153, 0.15);
+        color: #f472b6;
+        padding: 0.15rem 0.5rem;
+        border-radius: 6px;
+      }
+
+      .chat-badge {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+      }
+
+      .chat-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-height: 340px;
+        overflow-y: auto;
+      }
+
+      .message-wrapper {
+        display: flex;
+        width: 100%;
+      }
+
+      .user-msg {
+        justify-content: flex-end;
+      }
+
+      .ai-msg {
+        justify-content: flex-start;
+      }
+
+      .message-bubble {
+        max-width: 80%;
+        padding: 0.85rem 1.15rem;
+        border-radius: 14px;
+        font-size: 0.925rem;
+        line-height: 1.5;
+        position: relative;
+      }
+
+      .user-msg .message-bubble {
+        background: linear-gradient(135deg, #ec4899, #be185d);
+        color: #ffffff;
+        border-bottom-right-radius: 4px;
+      }
+
+      .ai-msg .message-bubble {
+        background: rgba(30, 41, 59, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #f1f5f9;
+        border-bottom-left-radius: 4px;
+      }
+
+      .msg-sender {
+        font-size: 0.75rem;
+        font-weight: 700;
+        opacity: 0.8;
+        margin-bottom: 0.25rem;
+      }
+
+      .msg-time {
+        font-size: 0.675rem;
+        opacity: 0.6;
+        text-align: right;
+        margin-top: 0.35rem;
+      }
+
+      .chat-footer {
+        padding: 1rem 1.5rem;
+        background: rgba(0, 0, 0, 0.3);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .chat-input {
+        flex: 1;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        color: var(--text);
+        font-family: var(--font-sans);
+        font-size: 0.9rem;
+        outline: none;
+      }
+
+      .send-btn {
+        background: linear-gradient(135deg, #ec4899, #8b5cf6);
+        border: none;
+        color: #ffffff;
+        padding: 0.75rem 1.25rem;
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+      }
+
+      .send-btn:hover {
+        opacity: 0.9;
       }
 
       .grid {
@@ -212,9 +401,9 @@ const buildTime = new Date().toISOString();
         border-color: rgba(255, 255, 255, 0.2);
       }
 
-      .card.highlight {
-        border-color: rgba(249, 115, 22, 0.4);
-        box-shadow: 0 8px 32px rgba(249, 115, 22, 0.08);
+      .card.highlight-preview {
+        border-color: rgba(236, 72, 153, 0.4);
+        box-shadow: 0 8px 32px rgba(236, 72, 153, 0.12);
       }
 
       .card-icon {
@@ -245,9 +434,9 @@ const buildTime = new Date().toISOString();
         color: var(--text-dim);
       }
 
-      .badge-main {
-        background: rgba(59, 130, 246, 0.15);
-        color: var(--main-color);
+      .badge-preview {
+        background: rgba(139, 92, 246, 0.15);
+        color: var(--preview-color);
         padding: 0.2rem 0.6rem;
         border-radius: 6px;
         font-weight: 600;
