@@ -1,0 +1,320 @@
+---
+const branchName = "main";
+const buildTime = new Date().toISOString();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Astro Cloudflare Branch Preview | {branchName}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="background-glow"></div>
+    <main class="container">
+      <header class="header">
+        <div class="badge">
+          <span class="pulse-dot"></span>
+          <span>Branch: <strong>{branchName}</strong></span>
+        </div>
+        <h1>Cloudflare Pages Branch Preview Test</h1>
+        <p class="subtitle">
+          Testing per-branch preview deployments powered by <strong>Astro</strong> & <strong>Cloudflare Pages</strong>.
+        </p>
+      </header>
+
+      <div class="grid">
+        <!-- Card 1: Branch Status -->
+        <div class="card highlight">
+          <div class="card-icon">🚀</div>
+          <h2>Current Deployment</h2>
+          <div class="info-row">
+            <span class="label">Environment:</span>
+            <span class="value badge-main">Production / Main</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Git Branch:</span>
+            <code class="code">{branchName}</code>
+          </div>
+          <div class="info-row">
+            <span class="label">Last Built:</span>
+            <span class="value">{buildTime}</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Workflow Instructions -->
+        <div class="card">
+          <div class="card-icon">🧪</div>
+          <h2>How to Test Branch Previews</h2>
+          <ol class="steps">
+            <li>Create a new git branch: <code>git checkout -b feature/test-preview</code></li>
+            <li>Make a UI or content edit in <code>src/pages/index.astro</code></li>
+            <li>Commit & push to GitHub: <code>git push origin feature/test-preview</code></li>
+            <li>Cloudflare Pages will build and generate a unique preview URL!</li>
+          </ol>
+        </div>
+
+        <!-- Card 3: Cloudflare Settings -->
+        <div class="card">
+          <div class="card-icon">⚙️</div>
+          <h2>Cloudflare Pages Config</h2>
+          <div class="config-list">
+            <div class="config-item">
+              <span class="config-name">Framework Preset:</span>
+              <span class="config-val">Astro</span>
+            </div>
+            <div class="config-item">
+              <span class="config-name">Build Command:</span>
+              <span class="config-val"><code>npm run build</code></span>
+            </div>
+            <div class="config-item">
+              <span class="config-name">Output Directory:</span>
+              <span class="config-val"><code>dist</code></span>
+            </div>
+            <div class="config-item">
+              <span class="config-name">Node Version:</span>
+              <span class="config-val">20.x or later</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>Built with ❤️ for testing GitHub & Cloudflare Pages Git Integration</p>
+      </footer>
+    </main>
+
+    <style>
+      :root {
+        --bg: #090d16;
+        --card-bg: rgba(22, 30, 46, 0.7);
+        --card-border: rgba(255, 255, 255, 0.08);
+        --text: #e2e8f0;
+        --text-dim: #94a3b8;
+        --accent: #f97316;
+        --accent-glow: rgba(249, 115, 22, 0.25);
+        --main-color: #3b82f6;
+        --success: #10b981;
+        --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: var(--font-sans);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      .background-glow {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, var(--accent-glow) 0%, rgba(9, 13, 22, 0) 70%);
+        top: -150px;
+        right: -150px;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .container {
+        max-width: 960px;
+        width: 100%;
+        padding: 3rem 1.5rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 3.5rem;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(249, 115, 22, 0.12);
+        border: 1px solid rgba(249, 115, 22, 0.3);
+        color: var(--accent);
+        padding: 0.4rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .pulse-dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--accent);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--accent);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.8); }
+      }
+
+      h1 {
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        font-weight: 800;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+      }
+
+      .subtitle {
+        color: var(--text-dim);
+        font-size: 1.125rem;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 16px;
+        padding: 1.75rem;
+        backdrop-filter: blur(12px);
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .card.highlight {
+        border-color: rgba(249, 115, 22, 0.4);
+        box-shadow: 0 8px 32px rgba(249, 115, 22, 0.08);
+      }
+
+      .card-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1.25rem;
+      }
+
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        font-size: 0.9rem;
+      }
+
+      .info-row:last-child {
+        border-bottom: none;
+      }
+
+      .label {
+        color: var(--text-dim);
+      }
+
+      .badge-main {
+        background: rgba(59, 130, 246, 0.15);
+        color: var(--main-color);
+        padding: 0.2rem 0.6rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+
+      .code {
+        font-family: var(--font-mono);
+        background: rgba(0, 0, 0, 0.4);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        color: #f1f5f9;
+      }
+
+      .steps {
+        padding-left: 1.25rem;
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        line-height: 1.7;
+      }
+
+      .steps li {
+        margin-bottom: 0.75rem;
+      }
+
+      .steps code {
+        font-family: var(--font-mono);
+        color: var(--accent);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.1rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.825rem;
+      }
+
+      .config-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .config-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.875rem;
+      }
+
+      .config-name {
+        color: var(--text-dim);
+      }
+
+      .config-val code {
+        font-family: var(--font-mono);
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        color: #38bdf8;
+      }
+
+      .footer {
+        text-align: center;
+        color: var(--text-dim);
+        font-size: 0.875rem;
+        border-top: 1px solid var(--card-border);
+        padding-top: 2rem;
+      }
+    </style>
+  </body>
+</html>
