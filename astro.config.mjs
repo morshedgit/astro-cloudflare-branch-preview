@@ -1,8 +1,8 @@
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 
-// Set output to hybrid for dynamic Cloudflare Worker API routes
+// Astro 5.x uses output: 'static' by default for static pages with dynamic API routes (prerender = false)
 export default defineConfig({
-  output: 'hybrid',
+  output: 'static',
   adapter: cloudflare()
 });
