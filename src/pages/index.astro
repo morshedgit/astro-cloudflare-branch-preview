@@ -2,10 +2,17 @@
 const branchName = "feature/analytics-dashboard";
 const buildTime = new Date().toISOString();
 const metrics = [
-  { label: "Preview Latency", value: "24ms", status: "Optimal", color: "#10b981" },
-  { label: "Edge Locations", value: "310+", status: "Active", color: "#38bdf8" },
-  { label: "Cache Hit Ratio", value: "99.4%", status: "Global", color: "#a855f7" },
-  { label: "Branch Commits", value: "12", status: "Synced", color: "#f97316" }
+  { label: "Preview Latency", value: "18ms", status: "Optimal", color: "#10b981" },
+  { label: "Edge Locations", value: "320+", status: "Active", color: "#38bdf8" },
+  { label: "Cache Hit Ratio", value: "99.8%", status: "Global", color: "#a855f7" },
+  { label: "Branch Commits", value: "24", status: "Synced", color: "#f97316" }
+];
+
+const edgeNodes = [
+  { location: "US-East (IAD)", status: "Online", ping: "4ms" },
+  { location: "EU-Central (FRA)", status: "Online", ping: "12ms" },
+  { location: "AP-East (HKG)", status: "Online", ping: "22ms" },
+  { location: "SA-East (GRU)", status: "Online", ping: "35ms" }
 ];
 ---
 
@@ -25,17 +32,17 @@ const metrics = [
       <header class="header">
         <div class="badge preview-badge">
           <span class="pulse-dot"></span>
-          <span>New Feature Branch: <strong>{branchName}</strong></span>
+          <span>Commit #2 Pushed: <strong>{branchName}</strong></span>
         </div>
-        <h1>📊 Analytics Dashboard Feature</h1>
+        <h1>📊 Analytics & Edge Nodes Dashboard</h1>
         <p class="subtitle">
-          Testing Cloudflare Pages automatic branch preview generation for <code>feature/analytics-dashboard</code>.
+          Testing Cloudflare Pages automatic preview URL updates on new branch commits for <code>feature/analytics-dashboard</code>.
         </p>
       </header>
 
-      <!-- FEATURE HIGHLIGHT: Analytics Cards Grid -->
+      <!-- METRICS GRID -->
       <section class="metrics-section">
-        <h2 class="section-title">✨ Branch Metrics & Performance (New Feature)</h2>
+        <h2 class="section-title">✨ Branch Metrics & Performance</h2>
         <div class="metrics-grid">
           {metrics.map(m => (
             <div class="metric-card">
@@ -51,6 +58,22 @@ const metrics = [
         </div>
       </section>
 
+      <!-- EDGE NODES SECTION (NEW COMMIT ADDITION) -->
+      <section class="nodes-section">
+        <h2 class="section-title">🌐 Global Edge Nodes (Added in Commit #2)</h2>
+        <div class="nodes-grid">
+          {edgeNodes.map(node => (
+            <div class="node-card">
+              <div class="node-info">
+                <span class="node-dot"></span>
+                <span class="node-location">{node.location}</span>
+              </div>
+              <span class="node-ping">{node.ping}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <div class="grid">
         <!-- Card 1: Branch Status -->
         <div class="card highlight-preview">
@@ -58,14 +81,18 @@ const metrics = [
           <h2>Branch Preview Status</h2>
           <div class="info-row">
             <span class="label">Environment:</span>
-            <span class="value badge-preview">Per-Branch Preview</span>
+            <span class="value badge-preview">Branch Preview</span>
           </div>
           <div class="info-row">
             <span class="label">Git Branch:</span>
             <code class="code">{branchName}</code>
           </div>
           <div class="info-row">
-            <span class="label">Last Built:</span>
+            <span class="label">Latest Commit:</span>
+            <span class="value">Commit #2 Pushed</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Built At:</span>
             <span class="value">{buildTime}</span>
           </div>
         </div>
@@ -73,11 +100,11 @@ const metrics = [
         <!-- Card 2: Workflow Instructions -->
         <div class="card">
           <div class="card-icon">🧪</div>
-          <h2>Branch Preview Verification</h2>
+          <h2>Per-Commit Preview URL Test</h2>
           <ol class="steps">
-            <li>Cloudflare detects push to <code>{branchName}</code>.</li>
-            <li>Generates unique URL: <code>https://feature-analytics-dashboard.astro-cloudflare-branch-preview.pages.dev</code></li>
-            <li>Compare this preview URL against the <code>main</code> branch deployment!</li>
+            <li>Commit #2 pushed to <code>{branchName}</code>.</li>
+            <li>Cloudflare automatically triggers a fresh build for this commit.</li>
+            <li>Preview URL updates instantly with the new Global Edge Nodes section!</li>
           </ol>
         </div>
 
@@ -214,11 +241,6 @@ const metrics = [
         line-height: 1.6;
       }
 
-      /* METRICS SECTION */
-      .metrics-section {
-        margin-bottom: 2.5rem;
-      }
-
       .section-title {
         font-size: 1.1rem;
         font-weight: 700;
@@ -226,6 +248,10 @@ const metrics = [
         margin-bottom: 1rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
+      }
+
+      .metrics-section, .nodes-section {
+        margin-bottom: 2.5rem;
       }
 
       .metrics-grid {
@@ -266,6 +292,51 @@ const metrics = [
         font-size: 1.75rem;
         font-weight: 800;
         color: #ffffff;
+      }
+
+      /* NODES GRID */
+      .nodes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 1rem;
+      }
+
+      .node-card {
+        background: rgba(56, 189, 248, 0.05);
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .node-info {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .node-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #38bdf8;
+        border-radius: 50%;
+        box-shadow: 0 0 6px #38bdf8;
+      }
+
+      .node-location {
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      .node-ping {
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        color: #38bdf8;
+        background: rgba(56, 189, 248, 0.15);
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
       }
 
       .grid {
