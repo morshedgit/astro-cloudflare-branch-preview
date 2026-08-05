@@ -2,20 +2,23 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   try {
     const body = await request.json();
     const { branch, commitMsg, content } = body;
 
     const repoOwner = "morshedgit";
     const repoName = "astro-cloudflare-branch-preview";
-    const githubToken = import.meta.env.GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+    
+    // Check Cloudflare runtime env bindings, process.env, and import.meta.env
+    const cfEnv = (locals as any)?.runtime?.env;
+    const githubToken = cfEnv?.GITHUB_TOKEN || process?.env?.GITHUB_TOKEN || import.meta.env.GITHUB_TOKEN;
 
     if (!githubToken) {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "GITHUB_TOKEN is missing in environment secrets. Add GITHUB_TOKEN to Cloudflare environment variables to execute server-side API commits."
+          error: "GITHUB_TOKEN is missing in Cloudflare runtime context. Ensure GITHUB_TOKEN is added under Workers & Pages -> Settings -> Environment Variables."
         }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
@@ -32,7 +35,7 @@ export const POST: APIRoute = async ({ request }) => {
     // 1. Get latest commit SHA from 'main'
     const mainRefRes = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/git/ref/heads/main`, { headers });
     if (!mainRefRes.ok) {
-      throw new Error(`Failed to fetch main ref: ${mainRefRes.statusText}`);
+      throw new Error(`Failed to fetch main ref from GitHub: ${mainRefRes.statusText}`);
     }
     const mainRefData = await mainRefRes.json();
     const mainSha = mainRefData.object.sha;
@@ -47,9 +50,8 @@ export const POST: APIRoute = async ({ request }) => {
       })
     });
 
-    // If branch already exists (422), we can still commit to it
     if (!createBranchRes.ok && createBranchRes.status !== 422) {
-      throw new Error(`Failed to create branch ${cleanBranch}: ${createBranchRes.statusText}`);
+      throw new Error(`Failed to create branch ${cleanBranch} on GitHub: ${createBranchRes.statusText}`);
     }
 
     // 3. Get existing file SHA on main
