@@ -1,0 +1,395 @@
+---
+const branchName = "feature/studio-editor";
+const buildTime = new Date().toISOString();
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Astro Design Studio & Branch Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <div class="studio-app">
+      <!-- TOP NAVIGATION BAR -->
+      <nav class="top-nav">
+        <div class="brand">
+          <span class="logo-icon">🎨</span>
+          <span class="logo-text">Astro Studio</span>
+          <span class="version-tag">v1.0 • Branch Creator</span>
+        </div>
+        <div class="nav-right">
+          <a href="/" class="nav-btn">← Back to Site</a>
+          <button id="exportBranchBtn" class="primary-btn">
+            <span>🚀 Save & Push Branch</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- MAIN SPLIT WORKSPACE -->
+      <div class="studio-workspace">
+        <!-- LEFT PANEL: CONTROLS & DESIGN SYSTEM -->
+        <aside class="control-panel">
+          <div class="panel-section">
+            <h3 class="section-title">1. Content & Branding</h3>
+            
+            <div class="form-group">
+              <label for="headlineInput">Main Headline</label>
+              <input type="text" id="headlineInput" value="Cloudflare Pages Branch Preview Test" />
+            </div>
+
+            <div class="form-group">
+              <label for="subtitleInput">Subtitle Description</label>
+              <textarea id="subtitleInput" rows="2">Testing per-branch preview deployments powered by Astro & Cloudflare Pages.</textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="badgeInput">Badge Label</label>
+              <input type="text" id="badgeInput" value="Studio Mode Active" />
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <h3 class="section-title">2. Design System Tokens</h3>
+            
+            <div class="form-group">
+              <label>Accent Color Preset</label>
+              <div class="color-presets">
+                <button class="color-swatch active" data-color="#10b981" style="background:#10b981" title="Emerald"></button>
+                <button class="color-swatch" data-color="#ec4899" style="background:#ec4899" title="Pink"></button>
+                <button class="color-swatch" data-color="#a855f7" style="background:#a855f7" title="Violet"></button>
+                <button class="color-swatch" data-color="#3b82f6" style="background:#3b82f6" title="Blue"></button>
+                <button class="color-swatch" data-color="#f97316" style="background:#f97316" title="Orange"></button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="glowRange">Background Glow Strength</label>
+              <input type="range" id="glowRange" min="10" max="80" value="40" />
+            </div>
+          </div>
+
+          <div class="panel-section">
+            <h3 class="section-title">3. Git Branch & Commit Config</h3>
+            
+            <div class="form-group">
+              <label for="branchInput">Target Branch Name</label>
+              <div class="input-prefix-wrapper">
+                <span class="prefix">studio/</span>
+                <input type="text" id="branchInput" value="design-update-v1" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="commitMsgInput">Commit Message</label>
+              <input type="text" id="commitMsgInput" value="feat(studio): update theme tokens and homepage copy" />
+            </div>
+          </div>
+        </aside>
+
+        <!-- RIGHT PANEL: LIVE CANVAS PREVIEW -->
+        <main class="preview-panel">
+          <div class="canvas-header">
+            <span class="canvas-title">Live Preview Canvas</span>
+            <span class="canvas-badge" id="previewBadgeText">Preview Sync Active</span>
+          </div>
+
+          <div class="canvas-viewport" id="viewport">
+            <div class="background-glow" id="previewGlow"></div>
+            
+            <div class="preview-content">
+              <div class="header">
+                <div class="badge" id="badgeContainer">
+                  <span class="pulse-dot" id="pulseDot"></span>
+                  <span id="badgeTextDisplay">Studio Mode Active</span>
+                </div>
+                <h1 id="headlineDisplay">Cloudflare Pages Branch Preview Test</h1>
+                <p class="subtitle" id="subtitleDisplay">
+                  Testing per-branch preview deployments powered by Astro & Cloudflare Pages.
+                </p>
+              </div>
+
+              <div class="grid">
+                <div class="card highlight" id="highlightCard">
+                  <div class="card-icon">🎨</div>
+                  <h2>Design Token Output</h2>
+                  <div class="info-row">
+                    <span class="label">Accent Color:</span>
+                    <code class="code" id="accentColorCode">#10b981</code>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">Glow Strength:</span>
+                    <span class="value" id="glowStrengthDisplay">40%</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">Target Branch:</span>
+                    <code class="code" id="targetBranchDisplay">studio/design-update-v1</code>
+                  </div>
+                </div>
+
+                <div class="card">
+                  <div class="card-icon">⚡</div>
+                  <h2>Automated Git Commit</h2>
+                  <p class="card-desc">
+                    Saving in Studio automatically generates a git branch, commits your design token changes, and triggers a Cloudflare Preview URL!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COMMAND OUTPUT MODAL / TERMINAL BOX -->
+          <div class="terminal-box" id="terminalBox">
+            <div class="term-header">
+              <span>Git Branch & Push Generator</span>
+              <button class="copy-btn" id="copyCmdBtn">Copy Git Commands</button>
+            </div>
+            <pre class="term-code" id="termCode">
+git checkout -b studio/design-update-v1
+git add src/pages/index.astro
+git commit -m "feat(studio): update theme tokens and homepage copy"
+git push -u origin studio/design-update-v1
+            </pre>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <style>
+      :root {
+        --bg: #090d16;
+        --panel-bg: #0e1526;
+        --border: rgba(255, 255, 255, 0.08);
+        --text: #e2e8f0;
+        --text-dim: #94a3b8;
+        --accent: #10b981;
+        --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { background: var(--bg); color: var(--text); font-family: var(--font-sans); height: 100vh; overflow: hidden; }
+
+      .studio-app { display: flex; flex-direction: column; height: 100vh; }
+
+      .top-nav {
+        height: 60px;
+        background: #0e1526;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+      }
+
+      .brand { display: flex; align-items: center; gap: 0.75rem; font-weight: 800; font-size: 1.1rem; }
+      .logo-icon { font-size: 1.4rem; }
+      .version-tag { font-size: 0.75rem; background: rgba(255, 255, 255, 0.08); padding: 0.2rem 0.6rem; border-radius: 9999px; color: var(--text-dim); }
+
+      .nav-right { display: flex; align-items: center; gap: 1rem; }
+      .nav-btn { color: var(--text-dim); text-decoration: none; font-size: 0.875rem; font-weight: 600; }
+      .nav-btn:hover { color: var(--text); }
+
+      .primary-btn {
+        background: linear-gradient(135deg, var(--accent), #059669);
+        border: none;
+        color: #fff;
+        padding: 0.6rem 1.25rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+      }
+      .primary-btn:hover { opacity: 0.9; }
+
+      .studio-workspace { display: flex; flex: 1; overflow: hidden; }
+
+      /* CONTROL PANEL */
+      .control-panel {
+        width: 360px;
+        background: var(--panel-bg);
+        border-right: 1px solid var(--border);
+        padding: 1.5rem;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+      }
+
+      .section-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); margin-bottom: 1rem; font-weight: 700; }
+      
+      .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+      .form-group label { font-size: 0.8rem; font-weight: 600; color: #cbd5e1; }
+      .form-group input, .form-group textarea {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.6rem 0.75rem;
+        color: var(--text);
+        font-family: var(--font-sans);
+        font-size: 0.875rem;
+        outline: none;
+      }
+      .form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+
+      .input-prefix-wrapper { display: flex; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 6px; }
+      .input-prefix-wrapper .prefix { padding-left: 0.75rem; color: var(--text-dim); font-family: var(--font-mono); font-size: 0.85rem; }
+      .input-prefix-wrapper input { border: none; background: transparent; }
+
+      .color-presets { display: flex; gap: 0.5rem; }
+      .color-swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.15s ease; }
+      .color-swatch:hover { transform: scale(1.1); }
+      .color-swatch.active { border-color: #ffffff; transform: scale(1.15); }
+
+      /* PREVIEW PANEL */
+      .preview-panel { flex: 1; background: #070a12; display: flex; flex-direction: column; padding: 1.5rem; position: relative; overflow-y: auto; }
+      .canvas-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+      .canvas-title { font-weight: 700; font-size: 0.9rem; color: var(--text-dim); }
+      .canvas-badge { font-size: 0.75rem; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight: 600; }
+
+      .canvas-viewport {
+        flex: 1;
+        background: #090d16;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .background-glow {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(9, 13, 22, 0) 70%);
+        top: -100px;
+        right: -100px;
+        pointer-events: none;
+      }
+
+      .preview-content { max-width: 680px; width: 100%; position: relative; z-index: 1; }
+      .header { text-align: center; margin-bottom: 2.5rem; }
+      
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: var(--accent);
+        padding: 0.4rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.85rem;
+        margin-bottom: 1.25rem;
+      }
+      .pulse-dot { width: 8px; height: 8px; background-color: var(--accent); border-radius: 50%; }
+
+      h1 { font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin-bottom: 0.75rem; }
+      .subtitle { color: var(--text-dim); font-size: 1rem; line-height: 1.6; }
+
+      .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+      .card { background: rgba(22, 30, 46, 0.75); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }
+      .card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+      .card h2 { font-size: 1.1rem; margin-bottom: 1rem; }
+      .card-desc { font-size: 0.875rem; color: var(--text-dim); line-height: 1.5; }
+
+      .info-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+      .code { font-family: var(--font-mono); background: rgba(0,0,0,0.4); padding: 0.15rem 0.4rem; border-radius: 4px; color: var(--accent); }
+
+      /* TERMINAL BOX */
+      .terminal-box {
+        margin-top: 1.25rem;
+        background: #000;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+      }
+      .term-header { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.75rem; }
+      .copy-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer; }
+      .copy-btn:hover { background: rgba(255,255,255,0.2); }
+      .term-code { font-family: var(--font-mono); font-size: 0.825rem; color: #34d399; line-height: 1.6; }
+    </style>
+
+    <script>
+      // INTERACTIVE STUDIO REALTIME BINDING
+      const headlineInput = document.getElementById('headlineInput');
+      const subtitleInput = document.getElementById('subtitleInput');
+      const badgeInput = document.getElementById('badgeInput');
+      const branchInput = document.getElementById('branchInput');
+      const commitMsgInput = document.getElementById('commitMsgInput');
+      const glowRange = document.getElementById('glowRange');
+
+      const headlineDisplay = document.getElementById('headlineDisplay');
+      const subtitleDisplay = document.getElementById('subtitleDisplay');
+      const badgeTextDisplay = document.getElementById('badgeTextDisplay');
+      const previewGlow = document.getElementById('previewGlow');
+      const accentColorCode = document.getElementById('accentColorCode');
+      const glowStrengthDisplay = document.getElementById('glowStrengthDisplay');
+      const targetBranchDisplay = document.getElementById('targetBranchDisplay');
+      const termCode = document.getElementById('termCode');
+      const exportBranchBtn = document.getElementById('exportBranchBtn');
+      const copyCmdBtn = document.getElementById('copyCmdBtn');
+
+      let currentAccent = '#10b981';
+
+      function updateTerminal() {
+        const branch = 'studio/' + (branchInput.value || 'design-update-v1');
+        const msg = commitMsgInput.value || 'feat(studio): update theme tokens and homepage copy';
+        targetBranchDisplay.textContent = branch;
+        termCode.textContent = `git checkout -b ${branch}\ngit add src/pages/index.astro\ngit commit -m "${msg}"\ngit push -u origin ${branch}`;
+      }
+
+      headlineInput.addEventListener('input', (e) => {
+        headlineDisplay.textContent = e.target.value || 'Cloudflare Pages Branch Preview Test';
+      });
+
+      subtitleInput.addEventListener('input', (e) => {
+        subtitleDisplay.textContent = e.target.value || 'Testing per-branch preview deployments.';
+      });
+
+      badgeInput.addEventListener('input', (e) => {
+        badgeTextDisplay.textContent = e.target.value || 'Studio Mode Active';
+      });
+
+      branchInput.addEventListener('input', updateTerminal);
+      commitMsgInput.addEventListener('input', updateTerminal);
+
+      glowRange.addEventListener('input', (e) => {
+        const val = e.target.value;
+        glowStrengthDisplay.textContent = val + '%';
+        previewGlow.style.background = `radial-gradient(circle, ${currentAccent}${Math.round(val * 2.55).toString(16).padStart(2,'0')} 0%, rgba(9, 13, 22, 0) 70%)`;
+      });
+
+      document.querySelectorAll('.color-swatch').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.color-swatch').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentAccent = btn.dataset.color;
+          accentColorCode.textContent = currentAccent;
+          document.documentElement.style.setProperty('--accent', currentAccent);
+          const val = glowRange.value;
+          previewGlow.style.background = `radial-gradient(circle, ${currentAccent}${Math.round(val * 2.55).toString(16).padStart(2,'0')} 0%, rgba(9, 13, 22, 0) 70%)`;
+        });
+      });
+
+      copyCmdBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(termCode.textContent.trim());
+        copyCmdBtn.textContent = 'Copied! ✅';
+        setTimeout(() => copyCmdBtn.textContent = 'Copy Git Commands', 2000);
+      });
+
+      exportBranchBtn.addEventListener('click', () => {
+        const branch = 'studio/' + (branchInput.value || 'design-update-v1');
+        alert(`🚀 Studio Branch Export Ready!\n\nTarget Branch: ${branch}\n\nRunning Git push command will create branch '${branch}' on GitHub and trigger an automatic Cloudflare Preview URL!`);
+      });
+    </script>
+  </body>
+</html>
